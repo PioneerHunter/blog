@@ -6,8 +6,13 @@
       </span>
     </div>
 
-    <div class="article-title">
-      {{ article.title }}
+    <div class="article-container">
+      <router-link
+        class="article-title"
+        :to="{ name: 'ArticleDetail', params: { id: article.id } }"
+      >
+        {{ article.title }}
+      </router-link>
     </div>
 
     <div>{{ formatted_time(article.created) }}</div>
@@ -41,6 +46,9 @@ export default {
 <style lang="less" scoped>
 #articles {
   padding: 10px;
+}
+.article-container {
+  padding: 5px 0 5px 0;
 }
 .article-title {
   font-size: large;
