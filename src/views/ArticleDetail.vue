@@ -39,9 +39,10 @@ export default {
       .then((response) => (this.article = response.data));
   },
   methods: {
+    // 返回转化的文章创建时间
     formatted_time: function (iso_date_string) {
       const date = new Date(iso_date_string);
-      return date.toLacalDateString;
+      return date.toLocaleDateString();
     },
   },
 };
