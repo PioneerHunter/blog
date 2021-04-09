@@ -20,11 +20,7 @@
 
   <div id="paginator">
     <span v-if="is_page_exists('previous')">
-      <router-link
-        :to="{ name: 'Home', query: { page: get_page_param('previous') } }"
-      >
-        Prev
-      </router-link>
+      <router-link :to="get_path('previous')"> Prev </router-link>
     </span>
 
     <span class="current-page">
@@ -32,11 +28,7 @@
     </span>
 
     <span v-if="is_page_exists('next')">
-      <router-link
-        :to="{ name: 'Home', query: { page: get_page_param('next') } }"
-      >
-        Next
-      </router-link>
+      <router-link :to="get_path('next')"> Next </router-link>
     </span>
   </div>
 </template>
@@ -99,12 +91,40 @@ export default {
     get_article_data: function () {
       // eslint-disable-next-line no-unused-vars
       let url = "/api/article";
-      const page = Number(this.$route.query.page);
-      if (!isNaN(page) && page !== 0) {
-        url = url + "/?page=" + page;
+      let params = new URLSearchParams();
+      // 判断值是否存在并添加该值，{ 键名：值 }
+      // appendIfExists为自定义方法，详情见src/main.js文件
+      params.appendIfExists("page", this.$route.query.page);
+      params.appendIfExists("search", this.$route.query.search);
+
+      const paramsString = params.toString();
+      if (paramsString.charAt(0) !== "") {
+        url += "/?" + paramsString; // 地址拼接
       }
       // 获取后端返回数据，http://127.0.0.1:8000/api/article/?page=.../...
       axios.get(url).then((response) => (this.info = response.data));
+    },
+
+    // 获取路径
+    get_path: function (direction) {
+      let url = "";
+      try {
+        switch (direction) {
+          case "next":
+            if (this.info.next !== undefined) {
+              url += new URL(this.info.next).search;
+            }
+            break;
+          case "previous":
+            if (this.info.previous !== undefined) {
+              url += new URL(this.info.previous).search;
+            }
+            break;
+        }
+      } catch {
+        return console.log("返回路径错误");
+      }
+      return url;
     },
   },
 };

@@ -1,7 +1,9 @@
 <template>
-  <br /><br />
-  <div id="footer">
-    <p>guoqy.com</p>
+  <div>
+    <br /><br />
+    <div id="footer">
+      <p>guoqy.com</p>
+    </div>
   </div>
 </template>
 
