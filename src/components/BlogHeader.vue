@@ -15,25 +15,34 @@
           <button @click.prevent="searchArticles"></button>
         </form>
       </div>
+      <hr />
+      <div class="login">
+        <div v-if="hasLogin">欢迎，{{ username }}!</div>
+        <router-link class="login-link" to="/login">登录</router-link>
+      </div>
     </div>
     <hr />
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "BlogHeader",
   data: function () {
     return {
       searchText: "",
+      username: "",
+      hasLogin: false,
     };
   },
   methods: {
     searchArticles() {
       // 搜索栏为空时返回主页，该功能待考虑
-      // if (this.searchText === "") {
-      //   this.$router.push({ name: "Home" });
-      // }
+      if (this.searchText === "") {
+        this.$router.push({ name: "Home" });
+      }
 
       // 字符串调用方法前记得判空
       let text = this.searchText;
@@ -47,10 +56,44 @@ export default {
       }
     },
   },
+  mounted() {
+    const that = this;
+    const storage = localStorage;
+    // 过期时间
+    const expiredTime = Number(storage.getItem("expiredTime.myblog"));
+    // 当前时间
+    const current = new Date().getTime();
+    // 刷新令牌
+    const refreshToken = storage.getItem("refresh.myblog");
+    // 用户名
+    that.username = storage.getItem("username.myblog");
+
+    // 初始token未过期
+    if (expiredTime > current) {
+      that.hasLogin = true;
+    } else if (refreshToken !== null) {
+      axios
+        .post("/api/token/refresh", {
+          refersh: refreshToken,
+        })
+        .then(function (response) {
+          const nextExpiredTime = Date.parse(response.headers.date) + 60000;
+          storage.setItem("access.myblog", response.data.access);
+          storage.setItem("expiredTime.myblog", nextExpiredTime);
+          storage.removeItem("refresh.myblog");
+          that.hasLogin = true;
+        })
+        .catch(() => {
+          storage.clear();
+          that.hasLogin = false;
+        });
+    }
+  },
 };
 </script>
 
 <style lang="less" scoped>
+// 布局
 #header {
   text-align: center;
   margin-top: 20px;
@@ -69,6 +112,7 @@ export default {
   box-sizing: border-box;
 }
 
+// 搜索框
 form {
   position: relative;
   width: 200px;
@@ -115,5 +159,15 @@ button {
   content: "搜索";
   font-size: 13px;
   color: white;
+}
+
+// 注册
+.login-link {
+  color: black;
+}
+
+.login {
+  text-align: right;
+  padding-right: 5px;
 }
 </style>

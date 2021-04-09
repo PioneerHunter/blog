@@ -58,6 +58,7 @@ export default {
       const date = new Date(iso_date_string);
       return date.toLocaleDateString();
     },
+
     // 判断页面是否存在
     is_page_exists: function (direction) {
       if (direction === "next") {
