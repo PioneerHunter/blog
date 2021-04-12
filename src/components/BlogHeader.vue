@@ -54,6 +54,10 @@ export default {
       localStorage.clear();
       // window.location.reload(false);
     },
+    // 更新登录用户名
+    refresh() {
+      this.username = localStorage.getItem("username.myblog");
+    },
   },
 };
 </script>
