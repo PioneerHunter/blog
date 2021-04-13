@@ -1,5 +1,8 @@
 <template>
   <div id="articles" v-for="article in info.results" v-bind:key="article.url">
+    <span class="category" v-if="article.category !== null">
+      {{ article.category.title }}
+    </span>
     <div>
       <span v-for="tag in article.tags" v-bind:key="tag" class="tag">
         {{ tag }}
@@ -144,6 +147,15 @@ export default {
   color: black;
   text-decoration: none;
   padding: 5px 0 5px 0;
+}
+.category {
+  padding: 5px 10px 5px 10px;
+  margin: 5px 5px 5px 0;
+  font-family: Georgia, Arial, sans-serif;
+  font-size: small;
+  background-color: darkred;
+  color: whitesmoke;
+  border-radius: 15px;
 }
 .tag {
   padding: 2px 5px 2px 5px;
