@@ -103,9 +103,14 @@ export default {
           storage.setItem("expiredTime.myblog", expiredTime);
           storage.setItem("username.myblog", that.signinName);
 
-          // 登录成功后跳转到首页
-          that.$router.push({ name: "Home" });
-          alert("欢迎" + that.signinName);
+          axios
+            .get("/api/user/" + that.signinName + "/")
+            .then(function (response) {
+              storage.setItem("isSuperuser.myblog", response.data.is_superuser);
+              // 登录成功后跳转到首页
+              that.$router.push({ name: "Home" });
+              alert("欢迎" + that.signinName);
+            });
         })
         .catch((error) => {
           alert("登录失败，请重试");

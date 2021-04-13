@@ -15,6 +15,9 @@
               >
                 用户中心
               </router-link>
+              <router-link :to="{ name: 'ArticleCreate' }" v-if="isSuperuser">
+                发布文章
+              </router-link>
               <!-- 退出登录并返回首页 -->
               <router-link class="logout" @click="logout" to="/">
                 Logout
@@ -42,6 +45,7 @@ export default {
     return {
       username: "",
       hasLogin: false,
+      isSuperuser: JSON.parse(localStorage.getItem("isSuperuser.myblog")),
     };
   },
   mounted() {
